@@ -1,0 +1,6 @@
+include: package:flutter_lints/flutter.yaml
+
+
+# Add trailing commas to preserve formatting
+formatter:
+  trailing_commas: preserve
