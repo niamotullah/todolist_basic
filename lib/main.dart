@@ -1,29 +1,34 @@
-import 'dart:io';
-
-import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:todolist_basic/model/task.dart';
+import 'package:todolist_basic/model/task_model.dart';
+import 'package:provider/provider.dart';
+import 'package:todolist_basic/provider/task_list_provider.dart';
 
 void main() {
   runApp(
     DevicePreview(
-      enabled: !(Platform.isAndroid || Platform.isIOS),
+      enabled: !kReleaseMode,
       builder: (context) => TodoApp(),
     ),
   );
 }
 
-class TodoApp extends StatefulWidget {
+class TodoApp extends StatelessWidget {
   const TodoApp({super.key});
 
   @override
-  State<TodoApp> createState() => _TodoAppState();
-}
-
-class _TodoAppState extends State<TodoApp> {
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MainScreen());
+    return MaterialApp(
+      home: ChangeNotifierProvider(
+        create: (BuildContext context) => TaskListProvider(),
+        child: MainScreen(),
+      ),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+      ),
+      darkTheme: ThemeData.dark(),
+    );
   }
 }
 
@@ -35,62 +40,77 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final _tasks = [
-    Task(title: 'task 1'),
-    Task(title: 'task 2'),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Tasks'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Task',
-        onPressed: _createNewTask,
-        enableFeedback: true,
-        child: Icon(Icons.add),
-      ),
-      body: ListView.builder(
-        itemCount: _tasks.length,
-        itemBuilder: (context, index) {
-          final title = _tasks[index].title;
+    return Consumer<TaskListProvider>(
+      builder: (context, value, child) => Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Tasks'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          tooltip: 'Add Task',
+          onPressed: () async {
+            final newItem = await showModalBottomSheet<TaskModel>(
+              showDragHandle: true,
+              context: context,
+              builder: (context) => AddNewTask(),
+            );
 
-          return ListTile(
-            leading: Checkbox.adaptive(
-              //todo make it work
-              value: false,
-              onChanged: (value) => false,
-            ),
+            if (newItem == null) return;
+            if (context.mounted) {
+              context.read<TaskListProvider>().addTask(newItem);
+            }
+          },
+          enableFeedback: true,
+          child: Icon(Icons.add),
+        ),
+        body: ListView.builder(
+          itemCount: value.tasksCount,
+          itemBuilder: (context, index) {
+            final task = value.tasks[index];
 
-            title: Text(title),
-          );
-        },
+            return ListTile(
+              leading: Checkbox.adaptive(
+                //todo make it work
+                value: false,
+                onChanged: (value) => false,
+              ),
+
+              title: Text(task.title),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Future<void> _createNewTask() async {
-    final newItem = await showModalBottomSheet<Task>(
-      showDragHandle: true,
-      context: context,
-      builder: (context) => AddNewTask(),
-    );
-    if (newItem == null) return;
-    setState(() => _tasks.insert(0, newItem));
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
 
 // todo: refactor, move, screen
-class AddNewTask extends StatelessWidget {
-  AddNewTask({super.key});
+class AddNewTask extends StatefulWidget {
+  const AddNewTask({super.key});
 
+  @override
+  State<AddNewTask> createState() => _AddNewTaskState();
+}
+
+class _AddNewTaskState extends State<AddNewTask> {
   final _formController = GlobalKey<FormState>();
+
   final _titleEditingController = TextEditingController();
 
   String? _title = '';
+
+  @override
+  void dispose() {
+    _titleEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +132,8 @@ class AddNewTask extends StatelessWidget {
                 return null;
               },
               keyboardType: TextInputType.number,
-              controller: _titleEditingController,
               maxLength: 40,
+              controller: _titleEditingController,
               onSaved: (newValue) => _title = newValue,
               decoration: InputDecoration(
                 hintText: 'Something',
@@ -165,8 +185,8 @@ class AddNewTask extends StatelessWidget {
 
     // return Task
 
-    final newTask = Task(title: _title!);
+    final newTask = TaskModel(title: _title!);
 
-    Navigator.of(context).pop<Task>(newTask);
+    Navigator.of(context).pop<TaskModel>(newTask);
   }
 }
