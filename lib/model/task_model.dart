@@ -7,5 +7,5 @@ class TaskModel {
   final String id;
   bool isDone = false;
   TaskModel({required this.title}) : id = uuid.v4();
-  void toggle() => isDone = !isDone;
+  void toggle({bool? value}) => isDone = value ?? !isDone;
 }

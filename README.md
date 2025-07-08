@@ -6,6 +6,6 @@ A simple basic ToDoList App
 
 - [x] Add/delete tasks
 
-- [ ] Checkbox for task completion
+- [x] Checkbox for task completion
 
 - [ ] Scrollable task list
