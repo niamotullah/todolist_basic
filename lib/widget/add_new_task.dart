@@ -23,64 +23,71 @@ class _AddNewTaskState extends State<AddNewTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      key: _formController,
-      child: Container(
-        padding: EdgeInsets.all(12),
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            // task name
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'title field cannot be empty';
-                }
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        key: _formController,
+        child: Container(
+          padding: EdgeInsets.all(12),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // task name
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'title field cannot be empty';
+                  }
 
-                return null;
-              },
-              keyboardType: TextInputType.number,
-              maxLength: 40,
-              controller: _titleEditingController,
-              onSaved: (newValue) => _title = newValue,
-              decoration: InputDecoration(
-                hintText: 'Something',
-                floatingLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                labelText: 'Title',
-                counter: ValueListenableBuilder(
-                  valueListenable: _titleEditingController,
-                  builder: (context, value, child) => Text(
-                    '${_titleEditingController.value.text.length}/40',
-                  ),
-                ),
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            SizedBox(height: 8),
-            Divider(),
-            // action button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // close addNewItem
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    'cancel',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                  return null;
+                },
+                keyboardType: TextInputType.text,
+                maxLength: 40,
+                controller: _titleEditingController,
+                onSaved: (newValue) => _title = newValue,
+                decoration: InputDecoration(
+                  hintText: 'Something',
+                  floatingLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  labelText: 'Title',
+                  counter: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _titleEditingController,
+                    builder: (context, value, child) => Text(
+                      '${_titleEditingController.value.text.length}/40',
                     ),
                   ),
+                  border: OutlineInputBorder(),
                 ),
-                ElevatedButton(
-                  onPressed: () => _submitForm(context),
-                  child: Text('Add'),
-                ),
-              ],
-            ),
-          ],
+              ),
+
+              SizedBox(height: 8),
+              Divider(),
+              // action button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // close addNewItem
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      'cancel',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _submitForm(context),
+                    child: Text('Add'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

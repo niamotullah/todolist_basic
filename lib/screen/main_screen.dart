@@ -19,6 +19,7 @@ class _MainScreenState extends State<MainScreen> {
     return Consumer<TaskListProvider>(
       builder: (context, value, child) {
         return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             centerTitle: true,
             title: Text('Tasks'),
@@ -27,7 +28,12 @@ class _MainScreenState extends State<MainScreen> {
             tooltip: 'Add Task',
             onPressed: () async {
               final newItem = await showModalBottomSheet<TaskModel>(
+                isDismissible: false,
+                enableDrag: false,
                 showDragHandle: true,
+
+                useSafeArea: true,
+                isScrollControlled: true,
                 context: context,
                 builder: (context) => AddNewTask(),
               );

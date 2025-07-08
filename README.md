@@ -8,4 +8,4 @@ A simple basic ToDoList App
 
 - [x] Checkbox for task completion
 
-- [ ] Scrollable task list
+- [x] Scrollable task list
