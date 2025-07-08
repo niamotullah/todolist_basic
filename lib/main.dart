@@ -25,7 +25,9 @@ class TodoApp extends StatelessWidget {
         child: MainScreen(),
       ),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple[900] ?? Colors.deepPurple,
+        ),
       ),
       darkTheme: ThemeData.dark(),
     );

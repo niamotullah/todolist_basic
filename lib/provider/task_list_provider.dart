@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:todolist_basic/model/task_model.dart';
 
 // todo: refactor based on this provider
@@ -6,10 +6,24 @@ class TaskListProvider extends ChangeNotifier {
   final List<TaskModel> _tasks = [];
   List<TaskModel> get tasks => _tasks;
 
-  int get tasksCount => _tasks.length;
+  // !debug: remove
+  TaskListProvider() {
+    if (kDebugMode) {
+      List<TaskModel> tmpList = [
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+        TaskModel(title: 'aaaaaa'),
+      ];
+      _tasks.addAll(tmpList);
+    }
+  }
 
   void addTask(TaskModel task) {
-    _tasks.add(task);
+    _tasks.insert(0, task);
     notifyListeners();
   }
 
@@ -18,6 +32,12 @@ class TaskListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //todo
-  void toggle(TaskModel task) {}
+  void toggle(TaskModel task) {
+    // find task by id
+    final index = _tasks.indexWhere((t) => t.id == task.id);
+
+    // mutate/toggle
+    _tasks[index].toggle;
+    notifyListeners();
+  }
 }
