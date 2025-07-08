@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:todolist_basic/model/task_model.dart';
+
+class AddNewTask extends StatefulWidget {
+  const AddNewTask({super.key});
+
+  @override
+  State<AddNewTask> createState() => _AddNewTaskState();
+}
+
+class _AddNewTaskState extends State<AddNewTask> {
+  final _formController = GlobalKey<FormState>();
+
+  final _titleEditingController = TextEditingController();
+
+  String? _title = '';
+
+  @override
+  void dispose() {
+    _titleEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      key: _formController,
+      child: Container(
+        padding: EdgeInsets.all(12),
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            // task name
+            TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'title field cannot be empty';
+                }
+
+                return null;
+              },
+              keyboardType: TextInputType.number,
+              maxLength: 40,
+              controller: _titleEditingController,
+              onSaved: (newValue) => _title = newValue,
+              decoration: InputDecoration(
+                hintText: 'Something',
+                floatingLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                labelText: 'Title',
+                counter: ValueListenableBuilder(
+                  valueListenable: _titleEditingController,
+                  builder: (context, value, child) => Text(
+                    '${_titleEditingController.value.text.length}/40',
+                  ),
+                ),
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            SizedBox(height: 8),
+            Divider(),
+            // action button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // close addNewItem
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _submitForm(context),
+                  child: Text('Add'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _submitForm(BuildContext context) {
+    //validate and save
+    final isValid = _formController.currentState?.validate();
+    if (isValid == null || !isValid) return;
+    _formController.currentState?.save();
+
+    // return Task
+
+    final newTask = TaskModel(title: _title!);
+
+    Navigator.of(context).pop<TaskModel>(newTask);
+  }
+}
