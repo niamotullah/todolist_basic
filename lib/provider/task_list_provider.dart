@@ -32,12 +32,8 @@ class TaskListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggle(TaskModel task) {
-    // find task by id
-    final index = _tasks.indexWhere((t) => t.id == task.id);
-
-    // mutate/toggle
-    _tasks[index].toggle;
+  void toggle(int index) {
+    _tasks[index].toggle();
     notifyListeners();
   }
 }
