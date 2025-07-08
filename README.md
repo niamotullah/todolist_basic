@@ -4,7 +4,7 @@ A simple basic ToDoList App
 
 ## Features
 
-- [ ] Add/delete tasks
+- [x] Add/delete tasks
 
 - [ ] Checkbox for task completion
 
