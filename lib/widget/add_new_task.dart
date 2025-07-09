@@ -64,9 +64,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                 ),
               ),
 
-              SizedBox(height: 8),
-              Divider(),
-              // action button
+              SizedBox(height: 8), Divider(), // action button
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -81,7 +79,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () => _submitForm(context),
+                    onPressed: _submitForm,
                     child: Text('Add'),
                   ),
                 ],
@@ -93,7 +91,7 @@ class _AddNewTaskState extends State<AddNewTask> {
     );
   }
 
-  void _submitForm(BuildContext context) {
+  void _submitForm() {
     //validate and save
     final isValid = _formController.currentState?.validate();
     if (isValid == null || !isValid) return;

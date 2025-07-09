@@ -5,7 +5,11 @@ Uuid uuid = Uuid()..v4();
 class TaskModel {
   String title;
   final String id;
-  bool isDone = false;
-  TaskModel({required this.title}) : id = uuid.v4();
+  bool isDone;
+
+  TaskModel({required this.title, bool? isCompleted})
+    : id = uuid.v4(),
+      isDone = isCompleted ?? false;
+
   void toggle({bool? value}) => isDone = value ?? !isDone;
 }

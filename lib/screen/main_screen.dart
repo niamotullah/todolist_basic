@@ -91,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
                       // },
                       key: Key(task.id),
                       onDismissed: (direction) => value.removeTask(task),
-                      child: TaskView(taskIndex: index),
+                      child: TaskView(task: task),
                     );
                   },
                 ),
