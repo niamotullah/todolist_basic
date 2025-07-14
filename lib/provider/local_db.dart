@@ -9,7 +9,7 @@ import 'package:todolist_basic/model/task_model.dart';
 
 const String kDbName = 'todo.db';
 const String kTodoTableName = 'todo_table';
-const int kDbVersion = 1;
+const int kDbVersion = 2;
 
 class LocalDb {
   static Database? _db;
@@ -77,6 +77,38 @@ class LocalDb {
       join(await getDatabasesPath(), kDbName),
       onCreate: _onCreate,
       version: kDbVersion,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion == 1 && newVersion == 2) {
+          await db.transaction(
+            (txn) async {
+              // rename old table
+              await txn.execute(
+                'ALTER TABLE $kTodoTableName RENAME TO ${kTodoTableName}_old;',
+              );
+
+              // create new table
+              await txn.execute('''
+                          CREATE TABLE $kTodoTableName (
+                            id TEXT PRIMARY KEY,
+                            title TEXT,
+                            isDone INTEGER,
+                            lastModified INTEGER
+                          )
+                      ''');
+
+              // copy old to new table
+              await txn.execute('''
+                INSERT INTO $kTodoTableName (id, title, isDone, lastModified)
+                SELECT id, title, isDone, creationTime
+                FROM ${kTodoTableName}_old;
+              ''');
+
+              // delete old table
+              await txn.execute('DROP TABLE ${kTodoTableName}_old');
+            },
+          );
+        }
+      },
     );
     return _db;
   }
@@ -87,7 +119,7 @@ class LocalDb {
         id TEXT PRIMARY KEY,
         title TEXT,
         isDone INTEGER,
-        creationTime INTEGER
+        lastModified INTEGER
       )
     ''');
   }

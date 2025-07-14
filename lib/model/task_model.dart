@@ -7,39 +7,41 @@ class TodoModel {
   String title;
   String id;
   bool isDone;
-  int creationTime;
+  int lastModified;
 
   TodoModel({required this.title, bool? isCompleted})
     : id = uuid.v4(),
       isDone = isCompleted ?? false,
-      creationTime = DateTime.now().secondsSinceEpoch();
+      lastModified = DateTime.now().secondsSinceEpoch();
 
   void toggle({bool? value}) => isDone = value ?? !isDone;
 
-  Map<String, Object?> get toMap => {
-    'id': id,
-    'title': title,
-    'isDone': isDone ? 1 : 0,
-    'creationTime': creationTime,
-  };
+  Map<String, Object?> get toMap {
+    return {
+      'id': id,
+      'title': title,
+      'isDone': isDone ? 1 : 0,
+      'lastModified': lastModified,
+    };
+  }
 
   factory TodoModel.fromMap(Map<String, Object?> map) {
     // CREATE TABLE $kTodoTableName (
     //   id TEXT PRIMARY KEY,
     //   title TEXT,
     //   isDone INTEGER,
-    //   creationTime INTEGER
+    //   lastModified INTEGER
     // )
     final taskId = map['id'] as String;
     final taskTitle = map['title'] as String;
     final taskIsDone = map['isDone'] as int == 1;
-    final taskCreationTime = map['creationTime'] as int;
+    final taskCreationTime = map['lastModified'] as int;
 
     return TodoModel(
         title: taskTitle,
         isCompleted: taskIsDone,
       )
       ..id = taskId
-      ..creationTime = taskCreationTime;
+      ..lastModified = taskCreationTime;
   }
 }
