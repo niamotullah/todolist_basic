@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todolist_basic/screen/main_screen.dart';
-import 'package:todolist_basic/provider/task_list_provider.dart';
+import 'package:todolist_basic/provider/todo_data_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode && !Platform.isAndroid,
@@ -23,7 +25,7 @@ class TodoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider(
-        create: (BuildContext context) => TaskListProvider(),
+        create: (BuildContext context) => TodoDataProvider(),
         child: MainScreen(),
       ),
       theme: ThemeData(

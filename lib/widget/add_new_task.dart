@@ -99,8 +99,8 @@ class _AddNewTaskState extends State<AddNewTask> {
 
     // return Task
 
-    final newTask = TaskModel(title: _title!);
+    final newTask = TodoModel(title: _title!);
 
-    Navigator.of(context).pop<TaskModel>(newTask);
+    Navigator.of(context).pop<TodoModel>(newTask);
   }
 }
