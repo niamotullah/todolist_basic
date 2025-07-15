@@ -4,44 +4,56 @@ import 'package:uuid/uuid.dart';
 Uuid uuid = Uuid()..v4();
 
 class TodoModel {
-  String title;
+  String _title;
   String id;
-  bool isDone;
   int lastModified;
 
-  TodoModel({required this.title, bool? isCompleted})
+  bool _isDone;
+  bool get isDone => _isDone;
+  set isDone(bool value) {
+    _isDone = value;
+    _onChange();
+  }
+
+  String get title => _title;
+  set title(String value) {
+    _title = value;
+    _onChange();
+  }
+
+  TodoModel({required String title, bool? isCompleted})
     : id = uuid.v4(),
-      isDone = isCompleted ?? false,
+      _title = title,
+      _isDone = isCompleted ?? false,
       lastModified = DateTime.now().secondsSinceEpoch();
 
-  void toggle({bool? value}) => isDone = value ?? !isDone;
+  void toggle({bool? value}) {
+    isDone = value ?? !_isDone;
+    _onChange();
+  }
 
-  Map<String, Object?> get toMap {
+  Map<String, dynamic> get toMap {
     return {
       'id': id,
-      'title': title,
-      'isDone': isDone ? 1 : 0,
+      'title': _title,
+      'isDone': _isDone ? 1 : 0,
       'lastModified': lastModified,
     };
   }
 
   factory TodoModel.fromMap(Map<String, Object?> map) {
-    // CREATE TABLE $kTodoTableName (
-    //   id TEXT PRIMARY KEY,
-    //   title TEXT,
-    //   isDone INTEGER,
-    //   lastModified INTEGER
-    // )
     final taskId = map['id'] as String;
     final taskTitle = map['title'] as String;
     final taskIsDone = map['isDone'] as int == 1;
-    final taskCreationTime = map['lastModified'] as int;
+    final lastModified = map['lastModified'] as int;
 
     return TodoModel(
         title: taskTitle,
         isCompleted: taskIsDone,
       )
       ..id = taskId
-      ..lastModified = taskCreationTime;
+      ..lastModified = lastModified;
   }
+
+  void _onChange() => lastModified = DateTime.now().secondsSinceEpoch();
 }

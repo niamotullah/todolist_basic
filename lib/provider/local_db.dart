@@ -21,6 +21,7 @@ class LocalDb {
       table,
       {
         'isDone': todo.isDone ? 1 : 0,
+        'lastModified': todo.lastModified,
       },
       where: 'id = ?',
       whereArgs: [

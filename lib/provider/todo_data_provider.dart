@@ -17,12 +17,14 @@ class TodoDataProvider extends ChangeNotifier {
     _tasks = result ?? [];
   }
 
-  /// list of tasks that has not completed yet
-  ///
-  /// where [task.isDone = false]
   List<TodoModel> get tasks {
-    return _tasks;
-    // return _tasks.where((element) => !element.isDone).toList();
+    // sort all
+    _tasks.sort((a, b) => b.lastModified.compareTo(a.lastModified));
+    // divide
+    final completedTodos = _tasks.where((t) => t.isDone).toList();
+    final notCompletedTodos = _tasks.where((t) => !t.isDone).toList();
+    // merge
+    return notCompletedTodos.followedBy(completedTodos).toList();
   }
 
   /// list of tasks that has marked as Done
