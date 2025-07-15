@@ -1,5 +1,17 @@
-include: package:flutter_lints/flutter.yaml
+include: package:lints/recommended.yaml
 
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_locals: true
+    avoid_redundant_argument_values: true
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
 
 # Add trailing commas to preserve formatting
 formatter:
