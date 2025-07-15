@@ -16,16 +16,16 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    final noTodoItems = Center(
+    const noTodoItems = Center(
       child: Text(
         '''No tasks! \nAdd by tapping into '+' button''',
         textAlign: TextAlign.center,
       ),
     );
 
-    myTodoItems(context, taskListProvider) {
+    myTodoItems(context, TodoDataProvider taskListProvider) {
       return ListView.builder(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         itemCount: taskListProvider.tasks.length,
         itemBuilder: (context, index) {
           final task = taskListProvider.tasks[index];
@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
 
     final myAppBar = AppBar(
       centerTitle: true,
-      title: Text('Tasks'),
+      title: const Text('Tasks'),
     );
 
     final addNewTaskButton = FloatingActionButton(
@@ -84,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
           useSafeArea: true,
           isScrollControlled: true,
           context: context,
-          builder: (context) => AddNewTask(),
+          builder: (context) => const AddNewTask(),
         );
 
         if (newItem == null) return;
@@ -93,10 +93,10 @@ class _MainScreenState extends State<MainScreen> {
         }
       },
       enableFeedback: true,
-      child: Icon(Icons.add),
+      child: const Icon(Icons.add),
     );
 
-    final dbLoading = Center(
+    const dbLoading = Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

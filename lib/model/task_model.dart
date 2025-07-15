@@ -1,7 +1,7 @@
 import 'package:todolist_basic/extension/date_time.dart';
 import 'package:uuid/uuid.dart';
 
-Uuid uuid = Uuid()..v4();
+Uuid uuid = const Uuid()..v4();
 
 class TodoModel {
   String _title;

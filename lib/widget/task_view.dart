@@ -18,7 +18,7 @@ class _TaskViewState extends State<TaskView> {
       builder: (context, taskListProvider, child) {
         return Card(
           child: ListTile(
-            contentPadding: EdgeInsets.all(8),
+            contentPadding: const EdgeInsets.all(8),
             leading: Checkbox.adaptive(
               value: widget.task.isDone,
               onChanged: (value) {

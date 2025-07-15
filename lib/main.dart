@@ -13,7 +13,7 @@ void main() {
   runApp(
     DevicePreview(
       enabled: !kReleaseMode && !Platform.isAndroid,
-      builder: (context) => TodoApp(),
+      builder: (context) => const TodoApp(),
     ),
   );
 }
@@ -26,7 +26,7 @@ class TodoApp extends StatelessWidget {
     return MaterialApp(
       home: ChangeNotifierProvider(
         create: (BuildContext context) => TodoDataProvider(),
-        child: MainScreen(),
+        child: const MainScreen(),
       ),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

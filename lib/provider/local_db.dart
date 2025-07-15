@@ -3,10 +3,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:todolist_basic/main.dart';
 import 'package:todolist_basic/model/task_model.dart';
 
-/// initialize db while LocalDb instance is created
-///
-/// make sure to call from [main]
-
 const String kDbName = 'todo.db';
 const String kTodoTableName = 'todo_table';
 const int kDbVersion = 2;

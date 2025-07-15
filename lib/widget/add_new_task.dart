@@ -32,7 +32,7 @@ class _AddNewTaskState extends State<AddNewTask> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formController,
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           alignment: Alignment.center,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -52,7 +52,9 @@ class _AddNewTaskState extends State<AddNewTask> {
                 onSaved: (newValue) => _title = newValue,
                 decoration: InputDecoration(
                   hintText: 'Something',
-                  floatingLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  floatingLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                   labelText: 'Title',
                   counter: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _titleEditingController,
@@ -60,11 +62,11 @@ class _AddNewTaskState extends State<AddNewTask> {
                       '${_titleEditingController.value.text.length}/40',
                     ),
                   ),
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
 
-              SizedBox(height: 8), Divider(), // action button
+              const SizedBox(height: 8), const Divider(), // action button
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -80,7 +82,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                   ),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: Text('Add'),
+                    child: const Text('Add'),
                   ),
                 ],
               ),
