@@ -8,7 +8,7 @@ class TodoDataProvider extends ChangeNotifier {
 
   Future<void> ensureInitialized() async {
     // prepare
-    await _db.ensureInitialized();
+    await LocalDb.ensureInitialized();
 
     // read
     final result = await _db.readAllSavedTodo();

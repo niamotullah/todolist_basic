@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todolist_basic/main.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqffi;
 import 'package:todolist_basic/model/task_model.dart';
 
 const String kDbName = 'todo.db';
@@ -35,7 +38,6 @@ class LocalDb {
   }
 
   /// writes into [db] table
-  //! TODO: fire a widget-message upon successful save
   Future<String>? insert(String table, TodoModel todo) async {
     final result = await _db?.insert(
       table,
@@ -65,26 +67,25 @@ class LocalDb {
     _db ?? _initializeDatabase().then((db) => _db = db);
   }
 
-  Future<void> ensureInitialized() async {
+  static Future<void> ensureInitialized() async {
     await LocalDb()._initializeDatabase();
   }
 
-  Future<Database?> _initializeDatabase() async {
-    _db ??= await openDatabase(
-      join(await getDatabasesPath(), kDbName),
-      onCreate: _onCreate,
-      version: kDbVersion,
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion == 1 && newVersion == 2) {
-          await db.transaction(
-            (txn) async {
-              // rename old table
-              await txn.execute(
-                'ALTER TABLE $kTodoTableName RENAME TO ${kTodoTableName}_old;',
-              );
+  FutureOr<void> _onDbUpgrade(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    if (oldVersion == 1 && newVersion == 2) {
+      await db.transaction(
+        (txn) async {
+          // rename old table
+          await txn.execute(
+            'ALTER TABLE $kTodoTableName RENAME TO ${kTodoTableName}_old;',
+          );
 
-              // create new table
-              await txn.execute('''
+          // create new table
+          await txn.execute('''
                           CREATE TABLE $kTodoTableName (
                             id TEXT PRIMARY KEY,
                             title TEXT,
@@ -93,20 +94,45 @@ class LocalDb {
                           )
                       ''');
 
-              // copy old to new table
-              await txn.execute('''
+          // copy old to new table
+          await txn.execute('''
                 INSERT INTO $kTodoTableName (id, title, isDone, lastModified)
                 SELECT id, title, isDone, creationTime
                 FROM ${kTodoTableName}_old;
               ''');
 
-              // delete old table
-              await txn.execute('DROP TABLE ${kTodoTableName}_old');
-            },
-          );
-        }
-      },
-    );
+          // delete old table
+          await txn.execute('DROP TABLE ${kTodoTableName}_old');
+        },
+      );
+    }
+  }
+
+  Future<Database?> _initializeDatabase() async {
+    if (_db != null) return _db;
+
+    getDbFullPath() async => join(await getDatabasesPath(), kDbName);
+
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      // Initialize FFI for desktop platforms
+      sqffi.sqfliteFfiInit();
+      sqffi.databaseFactory = sqffi.databaseFactoryFfi;
+      _db = await sqffi.databaseFactory.openDatabase(
+        await getDbFullPath(),
+        options: sqffi.OpenDatabaseOptions(
+          version: kDbVersion,
+          onCreate: _onCreate,
+          onUpgrade: _onDbUpgrade,
+        ),
+      );
+    } else {
+      _db = await openDatabase(
+        await getDbFullPath(),
+        version: kDbVersion,
+        onCreate: _onCreate,
+        onUpgrade: _onDbUpgrade,
+      );
+    }
     return _db;
   }
 
