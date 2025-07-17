@@ -29,40 +29,47 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: taskListProvider.tasks.length,
         itemBuilder: (context, index) {
           final task = taskListProvider.tasks[index];
-          return Dismissible(
-            direction: DismissDirection.endToStart,
-            // confirmDismiss: (direction) async {
-            //   final isConfirm = await showDialog<bool>(
-            //     context: context,
-            //     builder: (ctx) => Center(
-            //       child: AlertDialog(
-            //         content: Text(
-            //           'Are sure you want to delete this Task?',
-            //         ),
-            //         alignment: Alignment.center,
-            //         title: Text('Delete this Task?'),
-            //         actions: [
-            //           TextButton(
-            //             onPressed: () => Navigator.of(ctx).pop(),
-            //             child: Text('Cancel'),
-            //           ),
-            //           ElevatedButton(
-            //             onPressed: () {
-            //               value.removeTask(task);
-            //               Navigator.of(ctx).pop();
-            //             },
-            //             child: Text('Yes'),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   );
-            //   if (isConfirm == null || !isConfirm) return;
-            //   return null;
-            // },
-            key: Key(task.id),
-            onDismissed: (direction) => taskListProvider.removeTask(task),
-            child: TaskView(task: task),
+
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.error,
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Dismissible(
+              direction: DismissDirection.endToStart,
+              // confirmDismiss: (direction) async {
+              //   final isConfirm = await showDialog<bool>(
+              //     context: context,
+              //     builder: (ctx) => Center(
+              //       child: AlertDialog(
+              //         content: Text(
+              //           'Are sure you want to delete this Task?',
+              //         ),
+              //         alignment: Alignment.center,
+              //         title: Text('Delete this Task?'),
+              //         actions: [
+              //           TextButton(
+              //             onPressed: () => Navigator.of(ctx).pop(),
+              //             child: Text('Cancel'),
+              //           ),
+              //           ElevatedButton(
+              //             onPressed: () {
+              //               value.removeTask(task);
+              //               Navigator.of(ctx).pop();
+              //             },
+              //             child: Text('Yes'),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   );
+              //   if (isConfirm == null || !isConfirm) return;
+              //   return null;
+              // },
+              key: Key(task.id),
+              onDismissed: (direction) => taskListProvider.removeTask(task),
+              child: TaskView(task: task),
+            ),
           );
         },
       );
